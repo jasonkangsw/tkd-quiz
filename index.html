@@ -200,15 +200,15 @@
                     <!-- Card Front -->
                     <div class="absolute inset-0 backface-hidden bg-gradient-to-br from-slate-800 to-slate-850 border-2 border-slate-700 rounded-3xl p-6 flex flex-col justify-between items-center text-center shadow-xl">
                         <div class="w-full flex justify-between items-center text-xs text-slate-400">
-                            <span id="card-front-category" class="uppercase tracking-widest font-semibold text-red-400">KOREAN PHRASE</span>
+                            <span id="card-front-category" class="uppercase tracking-widest font-semibold text-red-400">QUESTION</span>
                             <span class="text-slate-500"><i class="fa-solid fa-arrows-rotate"></i> Tap to flip</span>
                         </div>
                         <div class="my-auto py-4">
                             <h2 id="card-front-main" class="font-playful text-3xl md:text-5xl font-medium text-white tracking-wide mb-2">
                                 CHA-RYOT
                             </h2>
-                            <p id="card-front-sub" class="text-slate-400 text-sm md:text-base font-medium">
-                                (Command)
+                            <p id="card-front-sub" class="hidden text-slate-400 text-sm md:text-base font-medium">
+                                <!-- Subtext removed during quiz to prevent giveaways -->
                             </p>
                         </div>
                         <div class="text-xs text-slate-500 flex items-center gap-1">
@@ -219,15 +219,15 @@
                     <!-- Card Back -->
                     <div class="absolute inset-0 backface-hidden rotate-y-180 bg-gradient-to-br from-slate-800 to-slate-900 border-2 border-yellow-500/50 rounded-3xl p-6 flex flex-col justify-between items-center text-center shadow-xl">
                         <div class="w-full flex justify-between items-center text-xs text-slate-400">
-                            <span id="card-back-category" class="uppercase tracking-widest font-semibold text-yellow-400">ENGLISH TRANSLATION</span>
+                            <span id="card-back-category" class="uppercase tracking-widest font-semibold text-yellow-400">ANSWER</span>
                             <span class="text-slate-500"><i class="fa-solid fa-arrows-rotate"></i> Tap to flip back</span>
                         </div>
                         <div class="my-auto py-4">
                             <h2 id="card-back-main" class="font-playful text-3xl md:text-5xl font-medium text-yellow-300 tracking-wide mb-2">
                                 Attention
                             </h2>
-                            <p id="card-back-detail" class="text-slate-300 text-sm md:text-base max-w-md mx-auto">
-                                Standard Taekwondo stance command.
+                            <p id="card-back-detail" class="hidden text-slate-300 text-sm md:text-base max-w-md mx-auto">
+                                <!-- Details hidden during quiz -->
                             </p>
                         </div>
                         <div id="card-back-hint" class="text-xs text-slate-400 italic">
@@ -681,6 +681,11 @@
         function loadCurrentQuizCard() {
             gameState.isCardFlipped = false;
             const cardInner = document.getElementById('quiz-card-inner');
+            
+            // Immediately hide answer content before flipping card back
+            document.getElementById('card-back-main').classList.add('opacity-0');
+            document.getElementById('card-back-category').classList.add('opacity-0');
+            
             cardInner.classList.remove('rotate-y-180');
 
             const current = gameState.quizQueue[gameState.currentIndex];
@@ -694,12 +699,30 @@
             // Card Front Setup
             document.getElementById('card-front-category').textContent = gameState.currentMode.includes('poomsae') ? "POOMSAE FORM" : "PHRASE / COMMAND";
             document.getElementById('card-front-main').textContent = current.prompt;
-            document.getElementById('card-front-sub').textContent = current.subPrompt || "";
+            
+            // Hide subtext in terminology mode so category cues don't give away answers
+            const subElem = document.getElementById('card-front-sub');
+            if (gameState.currentMode.includes('poomsae')) {
+                subElem.textContent = current.subPrompt || "";
+                subElem.classList.remove('hidden');
+            } else {
+                subElem.textContent = "";
+                subElem.classList.add('hidden');
+            }
 
-            // Card Back Setup
-            document.getElementById('card-back-category').textContent = "ANSWER";
-            document.getElementById('card-back-main').textContent = current.correctAnswer;
-            document.getElementById('card-back-detail').textContent = current.fullDetail || current.itemRef.hint || "Master this for your test!";
+            // Prepare Back Content & restore opacity after card is face-down on front
+            setTimeout(() => {
+                document.getElementById('card-back-category').textContent = "ANSWER";
+                document.getElementById('card-back-main').textContent = current.correctAnswer;
+                
+                // Hide detail text on the back of the card during quizzes
+                const backDetailElem = document.getElementById('card-back-detail');
+                backDetailElem.textContent = "";
+                backDetailElem.classList.add('hidden');
+
+                document.getElementById('card-back-main').classList.remove('opacity-0');
+                document.getElementById('card-back-category').classList.remove('opacity-0');
+            }, 300);
 
             // Options vs Self-Eval buttons display
             const optionsContainer = document.getElementById('quiz-options-container');
