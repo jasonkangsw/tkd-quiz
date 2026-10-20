@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KMF Taekwondo Black Belt Quiz & Study Guide</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for martial arts & navigation icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter for modern sans-serif typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f8fafc;
+        }
+        .font-playful {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-weight: 600; /* Clean semi-bold sans-serif styling */
+        }
+        /* 3D Flip Card Effect */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+        /* Custom animations */
+        @keyframes bounce-short {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-bounce-short {
+            animation: bounce-short 0.4s ease-in-out 2;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between">
+
+    <!-- Top Navigation & Stats Bar -->
+    <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50 shadow-md">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchView('home')">
+                <div class="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center font-playful font-medium text-white shadow-lg border-2 border-yellow-400 text-xl">
+                    🥋
+                </div>
+                <div>
+                    <h1 class="font-playful text-xl font-medium tracking-wide text-white flex items-center gap-2">
+                        TKD MASTERY
+                    </h1>
+                    <p class="text-xs text-slate-400">Black Belt Readiness Test</p>
+                </div>
+            </div>
+
+            <!-- Gamification Metrics -->
+            <div class="flex items-center space-x-4">
+                <!-- Streak -->
+                <div class="flex items-center space-x-1 bg-slate-700/80 px-3 py-1.5 rounded-full border border-slate-600" title="Current Streak">
+                    <i class="fa-solid fa-fire text-amber-500 animate-pulse"></i>
+                    <span id="streak-count" class="font-playful text-amber-400 font-normal text-sm">0</span>
+                </div>
+                <!-- XP / Rank Points -->
+                <div class="flex items-center space-x-1.5 bg-slate-700/80 px-3 py-1.5 rounded-full border border-slate-600" title="Experience Points">
+                    <i class="fa-solid fa-star text-yellow-400"></i>
+                    <span id="xp-count" class="font-playful text-yellow-300 font-normal text-sm">0 XP</span>
+                </div>
+                <!-- Weak Items Counter -->
+                <button onclick="switchView('revision')" class="relative flex items-center space-x-1 bg-slate-700/80 hover:bg-slate-600 px-3 py-1.5 rounded-full border border-slate-600 transition" title="Mistakes to Revise">
+                    <i class="fa-solid fa-triangle-exclamation text-rose-400"></i>
+                    <span id="weak-count" class="font-playful text-rose-300 font-normal text-sm">0</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Belt Rank Progress Bar -->
+        <div class="w-full bg-slate-950 h-2 flex overflow-hidden">
+            <div id="belt-progress" class="bg-gradient-to-r from-red-600 via-amber-500 to-yellow-400 h-full transition-all duration-500" style="width: 15%"></div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-4xl w-full mx-auto p-4 flex flex-col justify-center">
+
+        <!-- VIEW 1: HOME DASHBOARD -->
+        <section id="view-home" class="flex flex-col space-y-6 my-auto py-6">
+            <!-- Welcome Banner -->
+            <div class="bg-gradient-to-r from-red-600 to-red-800 rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden border-2 border-red-500">
+                <div class="absolute -right-8 -bottom-8 opacity-20 text-9xl">
+                    🥋
+                </div>
+                <div class="relative z-10 max-w-lg">
+                    <span class="inline-block bg-white/20 px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase mb-2">Ready for Black Belt?</span>
+                    <h2 class="font-playful text-3xl md:text-4xl font-medium mb-2">Master Your Kick & Theory!</h2>
+                    <p class="text-red-100 text-sm md:text-base mb-4">Practice Korean martial arts terminology and Taegeuk Poomsae forms with fun flashcards and quizzes!</p>
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="startTerminologyQuiz('ko-to-en')" class="bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-playful font-medium px-5 py-2.5 rounded-xl shadow-lg transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                            <i class="fa-solid fa-play"></i> Quick Start Quiz
+                        </button>
+                        <button onclick="switchView('study')" class="bg-white/10 hover:bg-white/20 text-white font-playful font-normal px-4 py-2.5 rounded-xl border border-white/20 transition">
+                            <i class="fa-solid fa-book-open"></i> Browse Study Cards
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Selection Cards Grid -->
+            <div class="grid md:grid-cols-2 gap-4">
+                <!-- Terminology Card -->
+                <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-6 shadow-lg hover:border-red-500/50 transition flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 bg-red-500/20 text-red-400 rounded-xl flex items-center justify-center text-2xl mb-4">
+                            🗣️
+                        </div>
+                        <h3 class="font-playful text-2xl font-medium text-white mb-2">Korean Terminology</h3>
+                        <p class="text-slate-400 text-sm mb-4">Commands, kicks, strikes, stances, and traditional Taekwondo vocabulary.</p>
+                    </div>
+                    <div class="space-y-2 pt-2 border-t border-slate-700/60">
+                        <div class="flex gap-2">
+                            <button onclick="startTerminologyQuiz('ko-to-en')" class="flex-1 bg-slate-700 hover:bg-slate-600 text-slate-100 text-xs font-semibold py-2.5 px-3 rounded-lg border border-slate-600 text-center transition">
+                                🇰🇷 Korean → 🇬🇧 English
+                            </button>
+                            <button onclick="startTerminologyQuiz('en-to-ko')" class="flex-1 bg-slate-700 hover:bg-slate-600 text-slate-100 text-xs font-semibold py-2.5 px-3 rounded-lg border border-slate-600 text-center transition">
+                                🇬🇧 English → 🇰🇷 Korean
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Poomsae Theory Card -->
+                <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-6 shadow-lg hover:border-blue-500/50 transition flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 bg-blue-500/20 text-blue-400 rounded-xl flex items-center justify-center text-2xl mb-4">
+                            ☯️
+                        </div>
+                        <h3 class="font-playful text-2xl font-medium text-white mb-2">Poomsae Theory</h3>
+                        <p class="text-slate-400 text-sm mb-4">Taegeuk forms (1 to 8): symbols, movement counts, and underlying philosophy.</p>
+                    </div>
+                    <div class="space-y-2 pt-2 border-t border-slate-700/60">
+                        <button onclick="startPoomsaeQuiz()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-playful font-medium py-2.5 px-4 rounded-lg shadow transition text-center">
+                            Start Poomsae Challenge <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Game Modes -->
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                <button onclick="switchView('study')" class="bg-slate-800 border border-slate-700 hover:bg-slate-700/80 p-4 rounded-xl text-left transition">
+                    <i class="fa-solid fa-graduation-cap text-amber-400 text-xl mb-2 block"></i>
+                    <div class="font-playful text-slate-200 font-medium text-sm">Study Hub</div>
+                    <div class="text-slate-400 text-xs">Review standard deck</div>
+                </button>
+
+                <button onclick="switchView('revision')" class="bg-slate-800 border border-slate-700 hover:bg-slate-700/80 p-4 rounded-xl text-left transition relative">
+                    <i class="fa-solid fa-wrench text-rose-400 text-xl mb-2 block"></i>
+                    <div class="font-playful text-slate-200 font-medium text-sm">Mistake Vault</div>
+                    <div class="text-slate-400 text-xs">Target weak spots</div>
+                </button>
+
+                <button onclick="resetProgressModal()" class="bg-slate-800 border border-slate-700 hover:bg-slate-700/80 p-4 rounded-xl text-left transition">
+                    <i class="fa-solid fa-rotate-left text-teal-400 text-xl mb-2 block"></i>
+                    <div class="font-playful text-slate-200 font-medium text-sm">Reset Stats</div>
+                    <div class="text-slate-400 text-xs">Clear current score</div>
+                </button>
+            </div>
+        </section>
+
+        <!-- VIEW 2: QUIZ / FLASHCARD INTERACTION MODE -->
+        <section id="view-quiz" class="hidden flex-col space-y-4 my-auto py-4">
+            <!-- Quiz Bar & Control -->
+            <div class="flex items-center justify-between text-sm">
+                <button onclick="switchView('home')" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 px-3 py-1.5 rounded-lg flex items-center gap-2 font-medium transition text-xs">
+                    <i class="fa-solid fa-arrow-left"></i> Exit Quiz
+                </button>
+                <div class="flex items-center space-x-3">
+                    <span id="quiz-badge" class="bg-red-500/20 text-red-400 border border-red-500/30 font-playful px-3 py-1 rounded-full text-xs font-medium">
+                        Terminology Quiz
+                    </span>
+                    <span id="quiz-card-counter" class="text-slate-400 font-mono text-xs">
+                        1 / 10
+                    </span>
+                </div>
+            </div>
+
+            <!-- Progress Indicator Bar -->
+            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div id="quiz-progress-bar" class="bg-gradient-to-r from-red-500 to-amber-400 h-full w-0 transition-all duration-300"></div>
+            </div>
+
+            <!-- Interactive 3D Flip Flashcard -->
+            <div class="perspective-1000 w-full min-h-[260px] md:min-h-[300px] my-2 cursor-pointer" onclick="flipQuizCard()">
+                <div id="quiz-card-inner" class="relative w-full h-full min-h-[260px] md:min-h-[300px] transform-style-3d transition-transform duration-500 rounded-3xl shadow-2xl">
+                    
+                    <!-- Card Front -->
+                    <div class="absolute inset-0 backface-hidden bg-gradient-to-br from-slate-800 to-slate-850 border-2 border-slate-700 rounded-3xl p-6 flex flex-col justify-between items-center text-center shadow-xl">
+                        <div class="w-full flex justify-between items-center text-xs text-slate-400">
+                            <span id="card-front-category" class="uppercase tracking-widest font-semibold text-red-400">KOREAN PHRASE</span>
+                            <span class="text-slate-500"><i class="fa-solid fa-arrows-rotate"></i> Tap to flip</span>
+                        </div>
+                        <div class="my-auto py-4">
+                            <h2 id="card-front-main" class="font-playful text-3xl md:text-5xl font-medium text-white tracking-wide mb-2">
+                                CHA-RYOT
+                            </h2>
+                            <p id="card-front-sub" class="text-slate-400 text-sm md:text-base font-medium">
+                                (Command)
+                            </p>
+                        </div>
+                        <div class="text-xs text-slate-500 flex items-center gap-1">
+                            <i class="fa-regular fa-lightbulb text-yellow-400"></i> Guess before clicking options below!
+                        </div>
+                    </div>
+
+                    <!-- Card Back -->
+                    <div class="absolute inset-0 backface-hidden rotate-y-180 bg-gradient-to-br from-slate-800 to-slate-900 border-2 border-yellow-500/50 rounded-3xl p-6 flex flex-col justify-between items-center text-center shadow-xl">
+                        <div class="w-full flex justify-between items-center text-xs text-slate-400">
+                            <span id="card-back-category" class="uppercase tracking-widest font-semibold text-yellow-400">ENGLISH TRANSLATION</span>
+                            <span class="text-slate-500"><i class="fa-solid fa-arrows-rotate"></i> Tap to flip back</span>
+                        </div>
+                        <div class="my-auto py-4">
+                            <h2 id="card-back-main" class="font-playful text-3xl md:text-5xl font-medium text-yellow-300 tracking-wide mb-2">
+                                Attention
+                            </h2>
+                            <p id="card-back-detail" class="text-slate-300 text-sm md:text-base max-w-md mx-auto">
+                                Standard Taekwondo stance command.
+                            </p>
+                        </div>
+                        <div id="card-back-hint" class="text-xs text-slate-400 italic">
+                            Keep up the great work!
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Quiz Options / Answer Selectors -->
+            <div id="quiz-options-container" class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+                <!-- Dynamic Buttons Injected Here via JavaScript -->
+            </div>
+
+            <!-- Self Evaluation Buttons (Shown in Flashcard Self-Test Mode) -->
+            <div id="self-eval-container" class="hidden grid-cols-2 gap-3 pt-2">
+                <button onclick="handleSelfEval(false)" class="bg-rose-950/80 hover:bg-rose-900 border border-rose-700 text-rose-200 font-playful text-base font-medium py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-xmark text-rose-400"></i> Need Practice
+                </button>
+                <button onclick="handleSelfEval(true)" class="bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-700 text-emerald-200 font-playful text-base font-medium py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-check text-emerald-400"></i> Got It Right!
+                </button>
+            </div>
+        </section>
+
+        <!-- VIEW 3: STUDY HUB & ALL FLASHCARDS -->
+        <section id="view-study" class="hidden flex-col space-y-4 my-auto py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="font-playful text-2xl md:text-3xl font-medium text-white">Study Vault</h2>
+                    <p class="text-slate-400 text-xs md:text-sm">Explore terminology & theory study deck</p>
+                </div>
+                <button onclick="switchView('home')" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 px-3.5 py-2 rounded-xl flex items-center gap-2 font-medium transition text-xs shadow">
+                    <i class="fa-solid fa-arrow-left"></i> Exit to Home
+                </button>
+            </div>
+
+            <!-- Category Tabs -->
+            <div class="flex border-b border-slate-700 space-x-4 text-sm font-playful">
+                <button id="tab-study-terms" onclick="filterStudyDeck('terms')" class="pb-2 border-b-2 border-red-500 text-red-400 font-medium transition">
+                    Terminology (34)
+                </button>
+                <button id="tab-study-poomsae" onclick="filterStudyDeck('poomsae')" class="pb-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition">
+                    Poomsae Theory (8)
+                </button>
+            </div>
+
+            <!-- Search Filter Bar -->
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-500"></i>
+                <input type="text" id="study-search" oninput="renderStudyCards()" placeholder="Search terms or meanings..." class="w-full bg-slate-800 border border-slate-700 text-white rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-red-500">
+            </div>
+
+            <!-- Dynamic Study Cards Grid -->
+            <div id="study-cards-grid" class="grid sm:grid-cols-2 gap-3 max-h-[60vh] overflow-y-auto pr-1">
+                <!-- Injected via Javascript -->
+            </div>
+        </section>
+
+        <!-- VIEW 4: REVISION & MISTAKES VAULT -->
+        <section id="view-revision" class="hidden flex-col space-y-4 my-auto py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="font-playful text-2xl font-medium text-white flex items-center gap-2">
+                        <i class="fa-solid fa-triangle-exclamation text-rose-400"></i> Weak Spot Vault
+                    </h2>
+                    <p class="text-slate-400 text-sm">Items you got wrong in previous rounds are stored here for extra practice.</p>
+                </div>
+                <button onclick="switchView('home')" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 px-3.5 py-2 rounded-xl flex items-center gap-2 font-medium transition text-xs shadow">
+                    <i class="fa-solid fa-arrow-left"></i> Exit to Home
+                </button>
+            </div>
+
+            <div id="revision-empty-state" class="hidden text-center py-12 bg-slate-800/50 rounded-2xl border border-slate-700">
+                <div class="text-5xl mb-3">🏆</div>
+                <h3 class="font-playful text-xl font-medium text-emerald-400 mb-1">Vault is Empty!</h3>
+                <p class="text-slate-400 text-sm max-w-sm mx-auto">You don't have any saved mistakes right now. Take a quiz to test yourself!</p>
+                <button onclick="startTerminologyQuiz('ko-to-en')" class="mt-4 bg-red-600 hover:bg-red-500 text-white font-playful font-medium px-4 py-2 rounded-xl text-sm">
+                    Start Terminology Quiz
+                </button>
+            </div>
+
+            <div id="revision-active-state" class="space-y-4">
+                <div class="flex items-center justify-between bg-slate-800 p-4 rounded-xl border border-slate-700">
+                    <span class="text-slate-300 text-sm font-medium">Items needing work: <strong id="revision-count-label" class="text-rose-400 font-bold">0</strong></span>
+                    <button onclick="startRevisionQuiz()" class="bg-rose-600 hover:bg-rose-500 text-white font-playful font-medium px-4 py-2 rounded-xl text-sm shadow transition">
+                        Practice Saved Weak Spots <i class="fa-solid fa-bolt ml-1"></i>
+                    </button>
+                </div>
+
+                <div id="revision-items-list" class="grid gap-2 max-h-[50vh] overflow-y-auto pr-1">
+                    <!-- Dynamic Mistake List -->
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 5: QUIZ COMPLETE / SUMMARY MODAL -->
+        <section id="view-results" class="hidden flex-col items-center justify-center text-center space-y-6 my-auto py-8">
+            <div class="w-24 h-24 bg-gradient-to-tr from-amber-500 to-yellow-300 rounded-full flex items-center justify-center text-5xl shadow-2xl animate-bounce-short border-4 border-yellow-200">
+                🥋
+            </div>
+            <div>
+                <span class="text-xs font-bold text-yellow-400 uppercase tracking-widest font-playful">ROUND COMPLETE</span>
+                <h2 id="result-title" class="font-playful text-3xl md:text-4xl font-medium text-white mt-1">Excellent Effort!</h2>
+                <p id="result-subtitle" class="text-slate-300 text-sm mt-1">You are one step closer to Black Belt level!</p>
+            </div>
+
+            <!-- Score Stats Grid -->
+            <div class="grid grid-cols-3 gap-3 w-full max-w-md bg-slate-800 p-4 rounded-2xl border border-slate-700">
+                <div class="p-2">
+                    <div class="text-slate-400 text-xs">Score</div>
+                    <div id="result-score" class="font-playful text-2xl font-medium text-emerald-400">8/10</div>
+                </div>
+                <div class="p-2 border-x border-slate-700">
+                    <div class="text-slate-400 text-xs">XP Earned</div>
+                    <div id="result-xp" class="font-playful text-2xl font-medium text-yellow-400">+80</div>
+                </div>
+                <div class="p-2">
+                    <div class="text-slate-400 text-xs">Streak</div>
+                    <div id="result-streak" class="font-playful text-2xl font-medium text-amber-500">5 🔥</div>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3 w-full max-w-md">
+                <button onclick="restartCurrentQuiz()" class="flex-1 bg-red-600 hover:bg-red-500 text-white font-playful font-medium py-3 px-4 rounded-xl shadow transition">
+                    <i class="fa-solid fa-rotate-right mr-1"></i> Play Again
+                </button>
+                <button onclick="switchView('home')" class="flex-1 bg-slate-700 hover:bg-slate-600 text-slate-200 font-playful font-normal py-3 px-4 rounded-xl border border-slate-600 transition">
+                    Main Menu
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-950 border-t border-slate-800 py-3 text-center text-xs text-slate-500">
+        Taekwondo Black Belt Readiness Test • Study Companion
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+
+        // 1. TERMINOLOGY DATA (34 Entries extracted directly from study guide)
+        const TERMINOLOGY_DATA = [
+            { id: "t1", korean: "CHA-RYOT", english: "Attention", type: "Command", hint: "Basic readiness posture command." },
+            { id: "t2", korean: "KYONG-RYE", english: "Bow", type: "Command", hint: "Show respect to instructor and opponent." },
+            { id: "t3", korean: "JUN-BI", english: "Ready", type: "Command", hint: "Preparation stance before movement." },
+            { id: "t4", korean: "SHI-JAK", english: "Start", type: "Command", hint: "Command to begin form or sparring." },
+            { id: "t5", korean: "GU-MAN", english: "Stop", type: "Command", hint: "Halt technique or action." },
+            { id: "t6", korean: "JI-RU-GI", english: "Punch", type: "Striking", hint: "Direct hand thrust." },
+            { id: "t7", korean: "MAK-GI", english: "Block", type: "Defensive", hint: "Defensive movement against attacks." },
+            { id: "t8", korean: "CHA-GI", english: "Kick", type: "Kicking", hint: "Foot technique." },
+            { id: "t9", korean: "GWAN-JANG-NIM", english: "Head Instructor", type: "Title", hint: "Master or grandmaster." },
+            { id: "t10", korean: "SA-BOM-NIM", english: "Instructor", type: "Title", hint: "Certified instructor." },
+            { id: "t11", korean: "AP-CHA-GI", english: "Front Kick", type: "Kicking", hint: "Straight forward snapping kick." },
+            { id: "t12", korean: "DOLYO-CHA-GI", english: "Roundhouse Kick", type: "Kicking", hint: "Circular kick aiming with instep." },
+            { id: "t13", korean: "YOP-CHA-GI", english: "Side Kick", type: "Kicking", hint: "Side thrusting kick with blade of foot." },
+            { id: "t14", korean: "MOM-TONG-JIRUGI", english: "Body Punch", type: "Striking", hint: "Middle section straight punch." },
+            { id: "t15", korean: "OLGUL-JURUGI", english: "Face Punch", type: "Striking", hint: "High section punch towards face." },
+            { id: "t16", korean: "ARE-JIRUGI", english: "Low Punch", type: "Striking", hint: "Downward directed punch." },
+            { id: "t17", korean: "HANA, DUL, SET, NET", english: "1, 2, 3, 4", type: "Numbers", hint: "Native Korean counting." },
+            { id: "t18", korean: "DASOT, YASOT, ILGOP", english: "5, 6, 7", type: "Numbers", hint: "Native Korean counting." },
+            { id: "t19", korean: "YADOL, AHOP, YOL", english: "8, 9, 10", type: "Numbers", hint: "Native Korean counting." },
+            { id: "t20", korean: "MOM-TONG-MAKGI", english: "Middle Block", type: "Defensive", hint: "Defending chest area." },
+            { id: "t21", korean: "OLGUL-MAKGI", english: "High Block", type: "Defensive", hint: "Protecting the head from above." },
+            { id: "t22", korean: "ARE-MAKGI", english: "Low Block", type: "Defensive", hint: "Protecting lower torso area." },
+            { id: "t23", korean: "KUKKIWON", english: "World Taekwondo Headquarters", type: "General", hint: "Official WT world headquarters in Seoul." },
+            { id: "t24", korean: "KYO-RU-GI", english: "Sparring", type: "Practice", hint: "Free combat or match." },
+            { id: "t25", korean: "HO-SHIN-SOOL", english: "Self-defence", type: "Practice", hint: "Practical self protection techniques." },
+            { id: "t26", korean: "SHE-O", english: "Rest", type: "Command", hint: "Relax Stance/At ease." },
+            { id: "t27", korean: "DUBON", english: "Twice/Double", type: "Modifier", hint: "Executing a technique twice." },
+            { id: "t28", korean: "PAL-GUP", english: "Elbow", type: "Body Part", hint: "Arm joint used for strikes." },
+            { id: "t29", korean: "SON-NAL", english: "Knife Hand", type: "Hand Part", hint: "Edge of the open palm." },
+            { id: "t30", korean: "JU-MOK", english: "Fist", type: "Hand Part", hint: "Clenched hand." },
+            { id: "t31", korean: "ME-JU-MOK", english: "Hammer Fist", type: "Striking", hint: "Bottom of closed fist strike." },
+            { id: "t32", korean: "DUNG-JU-MOK", english: "Back Fist", type: "Striking", hint: "Top back of closed fist strike." },
+            { id: "t33", korean: "DOL-GE-CHA-GI", english: "Spinning Roundhouse Kick", type: "Kicking", hint: "Tornado or 360 degree turning kick." },
+            { id: "t34", korean: "HU-RYO-CHA-GI", english: "Hook Kick", type: "Kicking", hint: "Whipping hook arc kick." },
+            { id: "t35", korean: "GA-WI-MAK-GI", english: "Scissors Block", type: "Defensive", hint: "Crossing low and middle blocks." },
+            { id: "t36", korean: "NE-RYO-CHA-GI", english: "Axe Kick", type: "Kicking", hint: "Downward heel drop kick." },
+            { id: "t37", korean: "BOM-SEO-GI", english: "Tiger Stance", type: "Stance", hint: "Short, weighted-back stance." },
+            { id: "t38", korean: "AP-GU-BI", english: "Long Stance", type: "Stance", hint: "Deep forward stance." },
+            { id: "t39", korean: "DWE-GU-BI", english: "Back Stance", type: "Stance", hint: "L-shaped back weighted stance." },
+            { id: "t40", korean: "AP-SEO-GI", english: "Short Stance", type: "Stance", hint: "Natural walking stance." },
+            { id: "t41", korean: "NARE-CHA-GI", english: "Double Roundhouse Kick", type: "Kicking", hint: "Rapid alternating round kicks." },
+            { id: "t42", korean: "DU-BAL-DANG-SONG", english: "Double Front Kick", type: "Kicking", hint: "Jumping double front kick." },
+            { id: "t43", korean: "WE-SANTUL-MAKGI", english: "Single Mountain Block", type: "Defensive", hint: "High and low side block form." },
+            { id: "t44", korean: "TOK-JI-RU-GI", english: "Punch to the Chin", type: "Striking", hint: "Upward chin targeted punch." },
+            { id: "t45", korean: "KAL-JE-BI", english: "Arc-hand Strike", type: "Striking", hint: "Arc between thumb and index finger to throat." },
+            { id: "t46", korean: "AN-HE-CHO-MAKGI", english: "Double-hand Inside Block", type: "Defensive", hint: "Wedge inside opening block." },
+            { id: "t47", korean: "TONG-MILGI-JUNBI-SEO-GI", english: "Koryo Ready Stance", type: "Stance", hint: "Pushing log posture ready stance." },
+            { id: "t48", korean: "BA-RO", english: "Return to Ready Stance", type: "Command", hint: "Return to starting posture." }
+        ];
+
+        // 2. POOMSAE THEORY DATA (Taegeuk 1 through 8)
+        const POOMSAE_DATA = [
+            {
+                id: "p1",
+                name: "TAEGEUK 1 (TEGUK IL JANG)",
+                symbol: "HEAVEN",
+                movements: "16 Movements",
+                numMovements: 16,
+                representation: "Represents the source of creation and introduces the most basic techniques."
+            },
+            {
+                id: "p2",
+                name: "TAEGEUK 2 (TEGUK E JANG)",
+                symbol: "JOYFULNESS, INTERNAL STRENGTH, EXTERNAL GENTLENESS",
+                movements: "18 Movements",
+                numMovements: 18,
+                representation: "Represents a calm and gentle attitude, with strength and firmness within."
+            },
+            {
+                id: "p3",
+                name: "TAEGEUK 3 (TEGUK SAM JANG)",
+                symbol: "FIRE AND SUN",
+                movements: "20 Movements",
+                numMovements: 20,
+                representation: "Represents energy, warmth and the development of a positive training attitude."
+            },
+            {
+                id: "p4",
+                name: "TAEGEUK 4 (TEGUK SA JANG)",
+                symbol: "THUNDER",
+                movements: "20 Movements",
+                numMovements: 20,
+                representation: "Represents great power, strength and dignity."
+            },
+            {
+                id: "p5",
+                name: "TAEGEUK 5 (TEGUK O JANG)",
+                symbol: "WIND",
+                movements: "20 Movements",
+                numMovements: 20,
+                representation: "Represents both powerful force and calmness, like the changing nature of the wind."
+            },
+            {
+                id: "p6",
+                name: "TAEGEUK 6 (TEGUK YUK JANG)",
+                symbol: "WATER",
+                movements: "19 Movements",
+                numMovements: 19,
+                representation: "Represents continuous flow and the ability to move smoothly around obstacles."
+            },
+            {
+                id: "p7",
+                name: "TAEGEUK 7 (TEGUK CHIL JANG)",
+                symbol: "MOUNTAIN",
+                movements: "25 Movements",
+                numMovements: 25,
+                representation: "Represents firmness, stability and strength."
+            },
+            {
+                id: "p8",
+                name: "TAEGEUK 8 (TEGUK PAL JANG)",
+                symbol: "EARTH",
+                movements: "27 Movements",
+                numMovements: 27,
+                representation: "Represents roots and stability, as well as the completion of one stage and the beginning of another."
+            }
+        ];
+
+
+        // App Game State
+        let gameState = {
+            xp: 0,
+            streak: 0,
+            weakSpotIds: new Set(),
+            currentMode: null, // 'terminology-ko-en', 'terminology-en-ko', 'poomsae', 'revision'
+            quizQueue: [],
+            currentIndex: 0,
+            correctCount: 0,
+            isCardFlipped: false,
+            activeStudyCategory: 'terms'
+        };
+
+        // Web Audio Synthesizer for Playful Sound Effects
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            try {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+
+                if (type === 'correct') {
+                    // Playful high double chime
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'incorrect') {
+                    // Soft low buzz
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(220, now); // A3
+                    osc.frequency.setValueAtTime(180, now + 0.15);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'flip') {
+                    // Quick swoosh/click
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.exponentialRampToValueAtTime(200, now + 0.08);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                }
+            } catch (e) {
+                // Audio fallback silence
+            }
+        }
+
+
+        function switchView(viewName) {
+            const views = ['home', 'quiz', 'study', 'revision', 'results'];
+            views.forEach(v => {
+                const el = document.getElementById(`view-${v}`);
+                if (v === viewName) {
+                    el.classList.remove('hidden');
+                    el.classList.add('flex');
+                } else {
+                    el.classList.add('hidden');
+                    el.classList.remove('flex');
+                }
+            });
+
+            if (viewName === 'study') {
+                renderStudyCards();
+            } else if (viewName === 'revision') {
+                renderRevisionVault();
+            }
+        }
+
+
+        // Start Terminology Quiz
+        function startTerminologyQuiz(direction) {
+            gameState.currentMode = direction; // 'ko-to-en' or 'en-to-ko'
+            // Pick 10 random terms from dataset
+            const shuffled = [...TERMINOLOGY_DATA].sort(() => 0.5 - Math.random());
+            gameState.quizQueue = shuffled.slice(0, 10).map(item => ({
+                id: item.id,
+                prompt: direction === 'ko-to-en' ? item.korean : item.english,
+                subPrompt: item.type,
+                correctAnswer: direction === 'ko-to-en' ? item.english : item.korean,
+                itemRef: item
+            }));
+            
+            gameState.currentIndex = 0;
+            gameState.correctCount = 0;
+            document.getElementById('quiz-badge').textContent = direction === 'ko-to-en' ? 'Korean → English' : 'English → Korean';
+            
+            switchView('quiz');
+            loadCurrentQuizCard();
+        }
+
+        // Start Poomsae Theory Quiz
+        function startPoomsaeQuiz() {
+            gameState.currentMode = 'poomsae';
+            // Shuffle all 8 Poomsae forms
+            const shuffled = [...POOMSAE_DATA].sort(() => 0.5 - Math.random());
+            gameState.quizQueue = shuffled.map(item => {
+                // Randomly test symbol, movement count or representation
+                const testTypes = ['symbol', 'movements', 'representation'];
+                const selectedType = testTypes[Math.floor(Math.random() * testTypes.length)];
+                
+                let answer = '';
+                let detail = '';
+                if (selectedType === 'symbol') {
+                    answer = item.symbol;
+                    detail = `${item.movements} • ${item.representation}`;
+                } else if (selectedType === 'movements') {
+                    answer = item.movements;
+                    detail = `Symbol: ${item.symbol}`;
+                } else {
+                    answer = item.representation;
+                    detail = `Symbol: ${item.symbol} (${item.movements})`;
+                }
+
+                return {
+                    id: item.id,
+                    prompt: item.name,
+                    subPrompt: `What is the ${selectedType.toUpperCase()} of this Poomsae?`,
+                    correctAnswer: answer,
+                    itemRef: item,
+                    testType: selectedType,
+                    fullDetail: detail
+                };
+            });
+
+            gameState.currentIndex = 0;
+            gameState.correctCount = 0;
+            document.getElementById('quiz-badge').textContent = 'Poomsae Theory';
+            
+            switchView('quiz');
+            loadCurrentQuizCard();
+        }
+
+        // Start Revision Quiz
+        function startRevisionQuiz() {
+            if (gameState.weakSpotIds.size === 0) return;
+            
+            gameState.currentMode = 'revision';
+            const weakItems = [];
+            gameState.weakSpotIds.forEach(id => {
+                const term = TERMINOLOGY_DATA.find(t => t.id === id);
+                if (term) {
+                    weakItems.push({
+                        id: term.id,
+                        prompt: term.korean,
+                        subPrompt: term.type,
+                        correctAnswer: term.english,
+                        itemRef: term
+                    });
+                } else {
+                    const poomsae = POOMSAE_DATA.find(p => p.id === id);
+                    if (poomsae) {
+                        weakItems.push({
+                            id: poomsae.id,
+                            prompt: poomsae.name,
+                            subPrompt: "Symbol & Meaning",
+                            correctAnswer: `${poomsae.symbol} (${poomsae.movements})`,
+                            itemRef: poomsae
+                        });
+                    }
+                }
+            });
+
+            gameState.quizQueue = weakItems;
+            gameState.currentIndex = 0;
+            gameState.correctCount = 0;
+            document.getElementById('quiz-badge').textContent = 'Weak Spot Revision';
+            
+            switchView('quiz');
+            loadCurrentQuizCard();
+        }
+
+
+        function loadCurrentQuizCard() {
+            gameState.isCardFlipped = false;
+            const cardInner = document.getElementById('quiz-card-inner');
+            cardInner.classList.remove('rotate-y-180');
+
+            const current = gameState.quizQueue[gameState.currentIndex];
+            const total = gameState.quizQueue.length;
+
+            // Update Header counters
+            document.getElementById('quiz-card-counter').textContent = `${gameState.currentIndex + 1} / ${total}`;
+            const pct = ((gameState.currentIndex) / total) * 100;
+            document.getElementById('quiz-progress-bar').style.width = `${pct}%`;
+
+            // Card Front Setup
+            document.getElementById('card-front-category').textContent = gameState.currentMode.includes('poomsae') ? "POOMSAE FORM" : "PHRASE / COMMAND";
+            document.getElementById('card-front-main').textContent = current.prompt;
+            document.getElementById('card-front-sub').textContent = current.subPrompt || "";
+
+            // Card Back Setup
+            document.getElementById('card-back-category').textContent = "ANSWER";
+            document.getElementById('card-back-main').textContent = current.correctAnswer;
+            document.getElementById('card-back-detail').textContent = current.fullDetail || current.itemRef.hint || "Master this for your test!";
+
+            // Options vs Self-Eval buttons display
+            const optionsContainer = document.getElementById('quiz-options-container');
+            const selfEvalContainer = document.getElementById('self-eval-container');
+
+            optionsContainer.innerHTML = '';
+            optionsContainer.classList.remove('hidden');
+            selfEvalContainer.classList.add('hidden');
+            selfEvalContainer.classList.remove('grid');
+
+            // Generate Multiple Choice Options
+            const options = generateDistractors(current);
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "bg-slate-800 hover:bg-slate-700/80 border border-slate-700 text-slate-100 font-medium py-3 px-4 rounded-xl text-sm transition text-center shadow flex items-center justify-center hover:border-red-500/50";
+                btn.textContent = opt;
+                btn.onclick = (e) => {
+                    e.stopPropagation();
+                    checkAnswer(opt, current.correctAnswer, btn);
+                };
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function generateDistractors(current) {
+            const correctAnswer = current.correctAnswer;
+            let pool = [];
+
+            if (gameState.currentMode.includes('poomsae')) {
+                if (current.testType === 'symbol') {
+                    pool = POOMSAE_DATA.map(p => p.symbol);
+                } else if (current.testType === 'movements') {
+                    pool = POOMSAE_DATA.map(p => p.movements);
+                } else {
+                    pool = POOMSAE_DATA.map(p => p.representation);
+                }
+            } else {
+                if (gameState.currentMode === 'ko-to-en' || gameState.currentMode === 'revision') {
+                    pool = TERMINOLOGY_DATA.map(t => t.english);
+                } else {
+                    pool = TERMINOLOGY_DATA.map(t => t.korean);
+                }
+            }
+
+            // Filter out correct answer and shuffle pool
+            const wrongOptions = pool.filter(item => item !== correctAnswer).sort(() => 0.5 - Math.random());
+            const selected = wrongOptions.slice(0, 3);
+            selected.push(correctAnswer);
+            return selected.sort(() => 0.5 - Math.random());
+        }
+
+        function flipQuizCard() {
+            playSound('flip');
+            const cardInner = document.getElementById('quiz-card-inner');
+            gameState.isCardFlipped = !gameState.isCardFlipped;
+            if (gameState.isCardFlipped) {
+                cardInner.classList.add('rotate-y-180');
+            } else {
+                cardInner.classList.remove('rotate-y-180');
+            }
+        }
+
+
+        function checkAnswer(selectedOpt, correctOpt, btnElement) {
+            // Flip card to reveal answer
+            if (!gameState.isCardFlipped) {
+                flipQuizCard();
+            }
+
+            const current = gameState.quizQueue[gameState.currentIndex];
+            const isCorrect = (selectedOpt === correctOpt);
+
+            // Disable all option buttons
+            const allBtns = document.getElementById('quiz-options-container').querySelectorAll('button');
+            allBtns.forEach(b => b.disabled = true);
+
+            if (isCorrect) {
+                playSound('correct');
+                btnElement.classList.remove('bg-slate-800', 'hover:bg-slate-700/80', 'border-slate-700');
+                btnElement.classList.add('bg-emerald-600', 'text-white', 'border-emerald-400');
+                
+                gameState.correctCount++;
+                gameState.streak++;
+                gameState.xp += 10;
+                
+                // If previously in weak spots and answered correctly, remove
+                if (gameState.weakSpotIds.has(current.id)) {
+                    gameState.weakSpotIds.delete(current.id);
+                }
+            } else {
+                playSound('incorrect');
+                btnElement.classList.remove('bg-slate-800', 'hover:bg-slate-700/80', 'border-slate-700');
+                btnElement.classList.add('bg-rose-600', 'text-white', 'border-rose-400');
+                
+                // Highlight correct button
+                allBtns.forEach(b => {
+                    if (b.textContent === correctOpt) {
+                        b.classList.add('bg-emerald-800', 'text-emerald-100', 'border-emerald-500');
+                    }
+                });
+
+                gameState.streak = 0; // reset streak on mistake
+                gameState.weakSpotIds.add(current.id); // add to weak spots
+            }
+
+            updateGamificationUI();
+
+            // Proceed to next card after brief delay
+            setTimeout(() => {
+                gameState.currentIndex++;
+                if (gameState.currentIndex < gameState.quizQueue.length) {
+                    loadCurrentQuizCard();
+                } else {
+                    showResults();
+                }
+            }, 1400);
+        }
+
+        function updateGamificationUI() {
+            document.getElementById('streak-count').textContent = gameState.streak;
+            document.getElementById('xp-count').textContent = `${gameState.xp} XP`;
+            document.getElementById('weak-count').textContent = gameState.weakSpotIds.size;
+
+            // Belt Progress Bar calculation (Caps at 500 XP for Black Belt)
+            const beltPct = Math.min(100, Math.max(5, (gameState.xp / 500) * 100));
+            document.getElementById('belt-progress').style.width = `${beltPct}%`;
+        }
+
+        function showResults() {
+            const total = gameState.quizQueue.length;
+            const score = gameState.correctCount;
+            const earnedXp = score * 10;
+
+            document.getElementById('result-score').textContent = `${score}/${total}`;
+            document.getElementById('result-xp').textContent = `+${earnedXp} XP`;
+            document.getElementById('result-streak').textContent = `${gameState.streak} 🔥`;
+
+            if (score === total) {
+                document.getElementById('result-title').textContent = "GRANDMASTER PERFECT!";
+                document.getElementById('result-subtitle').textContent = "Incredible job! You mastered every single item in this round.";
+            } else if (score >= total * 0.7) {
+                document.getElementById('result-title').textContent = "Black Belt Power!";
+                document.getElementById('result-subtitle').textContent = "Great knowledge! Review your weak spots to become unstoppable.";
+            } else {
+                document.getElementById('result-title').textContent = "Keep Training!";
+                document.getElementById('result-subtitle').textContent = "Practice makes perfect. Review the study deck and try again!";
+            }
+
+            switchView('results');
+        }
+
+        function restartCurrentQuiz() {
+            if (gameState.currentMode === 'poomsae') {
+                startPoomsaeQuiz();
+            } else if (gameState.currentMode === 'revision') {
+                startRevisionQuiz();
+            } else {
+                startTerminologyQuiz(gameState.currentMode || 'ko-to-en');
+            }
+        }
+
+
+        function filterStudyDeck(category) {
+            gameState.activeStudyCategory = category;
+            const tabTerms = document.getElementById('tab-study-terms');
+            const tabPoomsae = document.getElementById('tab-study-poomsae');
+
+            if (category === 'terms') {
+                tabTerms.className = "pb-2 border-b-2 border-red-500 text-red-400 font-bold transition";
+                tabPoomsae.className = "pb-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition";
+            } else {
+                tabPoomsae.className = "pb-2 border-b-2 border-blue-500 text-blue-400 font-bold transition";
+                tabTerms.className = "pb-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition";
+            }
+            renderStudyCards();
+        }
+
+        function renderStudyCards() {
+            const grid = document.getElementById('study-cards-grid');
+            const query = document.getElementById('study-search').value.toLowerCase();
+            grid.innerHTML = '';
+
+            if (gameState.activeStudyCategory === 'terms') {
+                const filtered = TERMINOLOGY_DATA.filter(t => 
+                    t.korean.toLowerCase().includes(query) || 
+                    t.english.toLowerCase().includes(query) ||
+                    t.type.toLowerCase().includes(query)
+                );
+
+                filtered.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = "bg-slate-800 border border-slate-700 rounded-xl p-4 flex flex-col justify-between hover:border-slate-500 transition shadow";
+                    card.innerHTML = `
+                        <div>
+                            <div class="flex justify-between items-start mb-1">
+                                <span class="text-xs font-bold text-red-400 uppercase tracking-wider">${item.type}</span>
+                                <i class="fa-solid fa-volume-high text-slate-500 hover:text-yellow-400 cursor-pointer" title="Listen sound effect" onclick="playSound('flip')"></i>
+                            </div>
+                            <h4 class="font-playful text-xl font-bold text-white mb-1">${item.korean}</h4>
+                            <p class="text-yellow-300 font-medium text-sm mb-2">${item.english}</p>
+                        </div>
+                        <p class="text-xs text-slate-400 border-t border-slate-700/60 pt-2 mt-2">${item.hint}</p>
+                    `;
+                    grid.appendChild(card);
+                });
+            } else {
+                const filtered = POOMSAE_DATA.filter(p => 
+                    p.name.toLowerCase().includes(query) || 
+                    p.symbol.toLowerCase().includes(query) ||
+                    p.representation.toLowerCase().includes(query)
+                );
+
+                filtered.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = "bg-slate-800 border border-slate-700 rounded-xl p-4 flex flex-col justify-between hover:border-blue-500/50 transition shadow";
+                    card.innerHTML = `
+                        <div>
+                            <div class="flex justify-between items-start mb-1">
+                                <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">${item.movements}</span>
+                                <span class="text-xs bg-blue-950 text-blue-300 px-2 py-0.5 rounded border border-blue-800 font-semibold">Taegeuk</span>
+                            </div>
+                            <h4 class="font-playful text-lg font-bold text-white mb-1">${item.name}</h4>
+                            <p class="text-amber-300 text-xs font-semibold mb-2">Symbol: ${item.symbol}</p>
+                        </div>
+                        <p class="text-xs text-slate-300 border-t border-slate-700/60 pt-2 mt-1">${item.representation}</p>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+        }
+
+        function renderRevisionVault() {
+            const emptyState = document.getElementById('revision-empty-state');
+            const activeState = document.getElementById('revision-active-state');
+            const list = document.getElementById('revision-items-list');
+
+            if (gameState.weakSpotIds.size === 0) {
+                emptyState.classList.remove('hidden');
+                activeState.classList.add('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                activeState.classList.remove('hidden');
+                document.getElementById('revision-count-label').textContent = gameState.weakSpotIds.size;
+
+                list.innerHTML = '';
+                gameState.weakSpotIds.forEach(id => {
+                    const term = TERMINOLOGY_DATA.find(t => t.id === id);
+                    const poomsae = POOMSAE_DATA.find(p => p.id === id);
+
+                    const item = document.createElement('div');
+                    item.className = "bg-slate-800 border border-rose-900/50 p-3 rounded-xl flex items-center justify-between text-sm";
+
+                    if (term) {
+                        item.innerHTML = `
+                            <div>
+                                <span class="text-white font-bold">${term.korean}</span>
+                                <span class="text-slate-400 text-xs ml-2">(${term.english})</span>
+                            </div>
+                            <button onclick="removeWeakSpot('${term.id}')" class="text-slate-500 hover:text-rose-400 p-1">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        `;
+                    } else if (poomsae) {
+                        item.innerHTML = `
+                            <div>
+                                <span class="text-white font-bold">${poomsae.name}</span>
+                                <span class="text-slate-400 text-xs ml-2">(${poomsae.symbol})</span>
+                            </div>
+                            <button onclick="removeWeakSpot('${poomsae.id}')" class="text-slate-500 hover:text-rose-400 p-1">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        `;
+                    }
+                    list.appendChild(item);
+                });
+            }
+        }
+
+        function removeWeakSpot(id) {
+            gameState.weakSpotIds.delete(id);
+            updateGamificationUI();
+            renderRevisionVault();
+        }
+
+        function resetProgressModal() {
+            gameState.xp = 0;
+            gameState.streak = 0;
+            gameState.weakSpotIds.clear();
+            updateGamificationUI();
+            switchView('home');
+        }
+
+        // Initialize App on window load
+        window.onload = function() {
+            updateGamificationUI();
+        };
+    </script>
+</body>
+</html>
